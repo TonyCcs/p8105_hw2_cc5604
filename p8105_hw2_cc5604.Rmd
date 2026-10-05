@@ -143,3 +143,17 @@ amyloid_df =
 
 For the amyloid data, I used `skip = 1` argument to omit the non-data entry and capture the real header. The `na = c("NA", "Na")` argument is used because the na values are represented by NA or Na in the raw dataset. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used `pivot_longer()` to store the five time-related features in a single variable with another column matching the biomarker values to the corresponding time of visit. The cleaned dataset now has `r nrow(amyloid_df)` rows and `r ncol(amyloid_df)` columns. It contains study id, time, and biomarker value information.
 
+## Checking whether some participants appear in only the baseline or amyloid datasets
+```{r}
+baseline_only_df = 
+  clean_baseline_df |> 
+  filter(!(id %in% amyloid_df$study_id))
+
+amyloid_only_df = 
+  amyloid_df |> 
+  distinct(study_id) |> 
+  filter(!(study_id %in% clean_baseline_df$id))
+```
+
+`r nrow(baseline_only_df)` participants appear in only the baseline dataset, and `r nrow(amyloid_only_df)` participants appear in only the amyloid dataset.
+
