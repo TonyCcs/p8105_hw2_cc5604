@@ -22,6 +22,12 @@ sub_df =
 ## Dataset description
 After cleaning, the dataset contains line, station name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance information. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `select()` function to keep only the variables of interest listed above. Lastly, I used the `mutate()` function to convert the entry variable from character (YES vs NO) to a logical variable. The resulting dataset now has `r nrow(sub_df)` rows and `r ncol(sub_df)` columns. These data are not tidy because the route number served is stored in the column names instead of in a single variable.
 
+## Answering the questions
+1) There are `r nrow(distinct(sub_df, line, station_name))` distinct stations.
+
+2) `r nrow(sub_df |> filter(ada) |> distinct(line, station_name))` stations are ADA compliant.
+
+3) `r sub_df |> filter(vending == "NO") |> pull(entry) |> mean()*100`% of station entrances / exits without vending allow entrance.
 
 
 
