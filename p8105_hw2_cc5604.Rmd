@@ -14,7 +14,7 @@ library(tidyverse)
 ## Reading and cleaning the designated file
 ```{r}
 sub_df = 
-  read.csv("data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") |> 
+  read_csv("data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") |> 
   janitor::clean_names() |> 
   select(line, station_name, station_latitude, station_longitude, starts_with("route"), entry, vending, entrance_type, ada) |> 
   mutate(entry = case_match(entry, "YES" ~ TRUE, "NO" ~ FALSE))
@@ -127,7 +127,7 @@ n_women_carrier = nrow(clean_baseline_df |> filter(sex == "female", apoe4 == "ca
 women_prop = (n_women_carrier / n_women) *100
 ```
 
-The dataset was imported using the `read_csv()` function. I used `skip = 1` arugument to omit the non-data entry and capture the real header. The `na = c(".")` argument is used because a missing age at onset is written as a period. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `mutate()` function to convert the sex and apoe4 variable from numeric to character labels adapted from the data description row. Lastly, I used the `filter()` function to remove participants who do not have MCI at baseline. The dataset contains participant id, current age, sex, education, apoe4 carrier, and age at onset informtion. `r nrow(baseline_df)` participants were recruited, `r nrow(clean_baseline_df)` participants met the stated inclusion criteria, and `r nrow(clean_baseline_df |> filter(!is.na(age_at_onset)))` developed MCI. The average baseline age is `r mean(clean_baseline_df$current_age)`. `r women_prop`% of women in the study are APOE4 carriers.
+The dataset was imported using the `read_csv()` function. I used `skip = 1` arugument to omit the non-data entry and capture the real header. The `na = c(".")` argument is used because a missing age at onset is written as a period. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `mutate()` function to convert the sex and apoe4 variable from numeric to character labels adapted from the data description row. Lastly, I used the `filter()` function to remove participants who had MCI at baseline. The dataset contains participant id, current age, sex, education, apoe4 carrier, and age at onset informtion. `r nrow(baseline_df)` participants were recruited, `r nrow(clean_baseline_df)` participants met the stated inclusion criteria, and `r nrow(clean_baseline_df |> filter(!is.na(age_at_onset)))` developed MCI. The average baseline age is `r mean(clean_baseline_df$current_age)`. `r women_prop`% of women in the study are APOE4 carriers.
 
 ## Reading and cleaning the amyloid file
 ```{r}
@@ -157,3 +157,14 @@ amyloid_only_df =
 
 `r nrow(baseline_only_df)` participants appear in only the baseline dataset, and `r nrow(amyloid_only_df)` participants appear in only the amyloid dataset.
 
+## Combining and exporting the datasets
+```{r}
+mci_df = 
+  clean_baseline_df |> 
+  filter(id %in% amyloid_df$study_id) |> 
+  left_join(amyloid_df, by = join_by(id == study_id))
+
+write_csv(mci_df, "data/mci_combined.csv")
+```
+
+The combined dataset retains only the `r nrow(distinct(mci_df, id))` participants who appear in both datasets. It has `r nrow(mci_df)` rows and `r ncol(mci_df)` columns. It contains all variables from baseline and amyloid datasets. Each row represents one participant at one visit.
