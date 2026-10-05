@@ -77,12 +77,10 @@ trash_df = bind_rows(mr_df, prof_df, gwy_df)
 trash_df
 ```
 
+## Dataset description
+The combined dataset contains information on dumpsters from Mr. Trash Wheel, Professor Trash Wheel, and Gwynns Falls Trash Wheel with rows that do not include dumpster-specific data omitted. The resulting dataset has `r nrow(trash_df)` rows and `r ncol(trash_df)` columns, which meaning there are `r nrow(trash_df)` observations and `r ncol(trash_df)` variables. I added an extra variable named `trash_wheel` to keep track of which Trash Wheel is which when binding the three datasets together. The key variables include time information such as `month` and `year`, trash amount information such as `weight_tons` and `volume_cubic_yards`, and specific trash record including `cigarette_butts`, `plastic_bottles`, and `plastic_bags`. Some variables are not included in all wheels, for example `sports_balls` is only available for Mr. Trash Wheel.
+
 ## Answering the questions
-
-
-Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables. 
-
-
 ```{r}
 weight =
   trash_df|> 
