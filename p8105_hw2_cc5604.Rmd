@@ -1,0 +1,14 @@
+---
+title: "p8105_hw2_cc5604"
+author: "Changshen Chen"
+date: 2026-10-04
+output: github_document
+---
+
+# Problem 1
+## Loading necessary package
+```{r}
+library(tidyverse)
+```
+
+
