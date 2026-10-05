@@ -65,6 +65,14 @@ gwy_df =
   filter(!is.na(dumpster))
 ```
 
+## Combining the datasets
+```{r}
+mr_df = mutate(mr_df, trash_wheel = "Mr. Trash Wheel", year = as.numeric(year))
+prof_df = mutate(prof_df, trash_wheel = "Professor Trash Wheel")
+gwy_df = mutate(gwy_df, trash_wheel = "Gwynns Falls Trash Wheel")
+
+trash_df = bind_rows(mr_df, prof_df, gwy_df)
+```
 
 
 
