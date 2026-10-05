@@ -100,7 +100,7 @@ cig =
 For the available data, `r weight` tons of trash were collected by Professor Trash Wheel. `r cig` cigarette butts were collected by Gwynnda in June of 2022.
 
 # Problem 3
-## Reading and cleaning the designated file
+## Reading and cleaning the baseline file
 ```{r}
 baseline_df = 
   read_csv("data/data_mci/MCI_baseline.csv", skip = 1, na = c(".")) |> 
@@ -127,6 +127,19 @@ n_women_carrier = nrow(clean_baseline_df |> filter(sex == "female", apoe4 == "ca
 women_prop = (n_women_carrier / n_women) *100
 ```
 
-The dataset was imported using the `read_csv()` function. I used `skip = 1` arugument to omit the non-data entry and capture the real header. The `na = "."` argument is used because a missing age at onset is written as a period. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `mutate()` function to convert the sex and apoe4 variable from numeric to character labels adapted from the data description row. Lastly, I used the `filter()` function to remove participants who do not have MCI at baseline. The dataset contains participant id, current age, sex, education, apoe4 carrier, and age at onset informtion. `r nrow(baseline_df)` participants were recruited, `r nrow(clean_baseline_df)` participants met the stated inclusion criteria, and `r nrow(clean_baseline_df |> filter(!is.na(age_at_onset)))` developed MCI. The average baseline age is `r mean(clean_baseline_df$current_age)`. `r women_prop`% of women in the study are APOE4 carriers.
+The dataset was imported using the `read_csv()` function. I used `skip = 1` arugument to omit the non-data entry and capture the real header. The `na = c(".")` argument is used because a missing age at onset is written as a period. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `mutate()` function to convert the sex and apoe4 variable from numeric to character labels adapted from the data description row. Lastly, I used the `filter()` function to remove participants who do not have MCI at baseline. The dataset contains participant id, current age, sex, education, apoe4 carrier, and age at onset informtion. `r nrow(baseline_df)` participants were recruited, `r nrow(clean_baseline_df)` participants met the stated inclusion criteria, and `r nrow(clean_baseline_df |> filter(!is.na(age_at_onset)))` developed MCI. The average baseline age is `r mean(clean_baseline_df$current_age)`. `r women_prop`% of women in the study are APOE4 carriers.
 
+## Reading and cleaning the amyloid file
+```{r}
+amyloid_df = 
+  read_csv("data/data_mci/mci_amyloid.csv", skip = 1, na = c("NA", "Na")) |> 
+  janitor::clean_names() |>
+  pivot_longer(
+    baseline:time_8,
+    names_to = "time",
+    values_to = "biomarker_values"
+  )
+```
+
+For the amyloid data, I used `skip = 1` argument to omit the non-data entry and capture the real header. The `na = c("NA", "Na")` argument is used because the na values are represented by NA or Na in the raw dataset. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used `pivot_longer()` to store the five time-related features in a single variable with another column matching the biomarker values to the corresponding time of visit. The cleaned dataset now has `r nrow(amyloid_df)` rows and `r ncol(amyloid_df)` columns. It contains study id, time, and biomarker value information.
 
