@@ -29,7 +29,7 @@ After cleaning, the dataset contains line, station name, station latitude / long
 
 3) `r sub_df |> filter(vending == "NO") |> pull(entry) |> mean()*100`% of station entrances / exits without vending allow entrance.
 
-## Reformating the dataset
+## Reformatting the dataset
 ```{r}
 tidy_df = 
   sub_df |> 
@@ -40,9 +40,32 @@ tidy_df =
     values_to = "route_name"
   )
 ```
+
 ## Answering the questions
 1) `r nrow(tidy_df |> filter(route_name == "A") |> distinct(line, station_name))` distinct stations serve the A train.
 2) Of the stations that serve the A train, `r nrow(tidy_df |> filter(route_name == "A") |>  filter(ada == "TRUE") |> distinct(line, station_name))` are ADA compliant.
+
+# Problem 2
+## Reading and cleaning the designated file
+```{r}
+mr_df = 
+  readxl::read_excel("data/202509 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N709") |> 
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster)) |>
+  mutate(sports_balls = as.integer(round(sports_balls)))
+
+prof_df = 
+  readxl::read_excel("data/202509 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M134") |> 
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster))
+
+gwy_df =
+  readxl::read_excel("data/202509 Trash Wheel Collection Data.xlsx", sheet = "Gwynns Falls Trash Wheel", range = "A2:L351") |> 
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster))
+```
+
+
 
 
 
