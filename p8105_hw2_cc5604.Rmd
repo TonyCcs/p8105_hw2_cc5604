@@ -19,3 +19,10 @@ sub_df =
   mutate(entry = case_match(entry, "YES" ~ TRUE, "NO" ~ FALSE))
 ```
 
+## Dataset description
+After cleaning, the dataset contains line, station name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance information. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `select()` function to keep only the variables of interest listed above. Lastly, I used the `mutate()` function to convert the entry variable from character (YES vs NO) to a logical variable. The resulting dataset now has `r nrow(sub_df)` rows and `r ncol(sub_df)` columns. These data are not tidy because the route number served is stored in the column names instead of in a single variable.
+
+
+
+
+
