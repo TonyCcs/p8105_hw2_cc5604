@@ -10,6 +10,7 @@ output: github_document
 ```{r}
 library(tidyverse)
 ```
+
 ## Reading and cleaning the designated file
 ```{r}
 sub_df = 
@@ -72,8 +73,33 @@ prof_df = mutate(prof_df, trash_wheel = "Professor Trash Wheel")
 gwy_df = mutate(gwy_df, trash_wheel = "Gwynns Falls Trash Wheel")
 
 trash_df = bind_rows(mr_df, prof_df, gwy_df)
+
+trash_df
 ```
 
+## Answering the questions
+
+
+Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables. 
+
+
+```{r}
+weight =
+  trash_df|> 
+  filter(trash_wheel == "Professor Trash Wheel") |> 
+  pull(weight_tons) |> 
+  sum()
+
+cig = 
+  trash_df |> 
+  filter(trash_wheel == "Gwynns Falls Trash Wheel") |> 
+  filter(month == "June") |> 
+  filter(year == "2022") |> 
+  pull(cigarette_butts) |> 
+  sum()
+```
+
+For the available data, `r weight` tons of trash were collected by Professor Trash Wheel. `r cig` cigarette butts were collected by Gwynnda in June of 2022.
 
 
 
