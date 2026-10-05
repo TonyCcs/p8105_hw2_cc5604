@@ -103,7 +103,7 @@ For the available data, `r weight` tons of trash were collected by Professor Tra
 ## Reading and cleaning the designated file
 ```{r}
 baseline_df = 
-  read_csv("data/data_mci/MCI_baseline.csv", skip = 1, na = c("", "NA", ".")) |> 
+  read_csv("data/data_mci/MCI_baseline.csv", skip = 1, na = c(".")) |> 
   janitor::clean_names()|>
   mutate(
     sex = case_match(
@@ -116,9 +116,17 @@ baseline_df =
       1 ~ "carrier", 
       0 ~ "non-carrier"
       )
-  ) |>
+  ) 
+
+clean_baseline_df = 
+  baseline_df |>
   filter(is.na(age_at_onset) | age_at_onset > current_age)
+
+n_women = nrow(clean_baseline_df |> filter(sex == "female"))
+n_women_carrier = nrow(clean_baseline_df |> filter(sex == "female", apoe4 == "carrier") )
+women_prop = (n_women_carrier / n_women) *100
 ```
 
+The dataset was imported using the `read_csv()` function. I used `skip = 1` arugument to omit the non-data entry and capture the real header. The `na = "."` argument is used because a missing age at onset is written as a period. For the cleaning steps, I first used `clean_names()` function to convert the raw column names into standardized strings. Then, I used the `mutate()` function to convert the sex and apoe4 variable from numeric to character labels adapted from the data description row. Lastly, I used the `filter()` function to remove participants who do not have MCI at baseline. The dataset contains participant id, current age, sex, education, apoe4 carrier, and age at onset informtion. `r nrow(baseline_df)` participants were recruited, `r nrow(clean_baseline_df)` participants met the stated inclusion criteria, and `r nrow(clean_baseline_df |> filter(!is.na(age_at_onset)))` developed MCI. The average baseline age is `r mean(clean_baseline_df$current_age)`. `r women_prop`% of women in the study are APOE4 carriers.
 
 
