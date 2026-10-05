@@ -10,5 +10,12 @@ output: github_document
 ```{r}
 library(tidyverse)
 ```
-
+## Reading and cleaning the designated file
+```{r}
+sub_df = 
+  read.csv("data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") |> 
+  janitor::clean_names() |> 
+  select(line, station_name, station_latitude, station_longitude, starts_with("route"), entry, vending, entrance_type, ada) |> 
+  mutate(entry = case_match(entry, "YES" ~ TRUE, "NO" ~ FALSE))
+```
 
