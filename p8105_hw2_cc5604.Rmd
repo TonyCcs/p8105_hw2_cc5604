@@ -99,5 +99,26 @@ cig =
 
 For the available data, `r weight` tons of trash were collected by Professor Trash Wheel. `r cig` cigarette butts were collected by Gwynnda in June of 2022.
 
+# Problem 3
+## Reading and cleaning the designated file
+```{r}
+baseline_df = 
+  read_csv("data/data_mci/MCI_baseline.csv", skip = 1, na = c("", "NA", ".")) |> 
+  janitor::clean_names()|>
+  mutate(
+    sex = case_match(
+      sex, 
+      1 ~ "male", 
+      0 ~ "female"
+      ),
+    apoe4 = case_match(
+      apoe4, 
+      1 ~ "carrier", 
+      0 ~ "non-carrier"
+      )
+  ) |>
+  filter(is.na(age_at_onset) | age_at_onset > current_age)
+```
+
 
 
